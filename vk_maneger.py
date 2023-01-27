@@ -5,6 +5,7 @@ import random
 
 
 def post_wall_vk(login, password, list_publics, messages):
+    print('Авторизуюсь!')
     vk_session = vk_api.VkApi(login, password)
     vk_session.auth()
 
@@ -13,24 +14,33 @@ def post_wall_vk(login, password, list_publics, messages):
     for i in list_publics:
         print(f"Отправляю в {i.strip()}")
         vk_session.method("wall.post", {
-            'owner_id': i,
+            'owner_id': i.strip(),
             'message': messages,
             'attachment': '',
         })
         time.sleep(random.randint(10, 20))
-
-with open('messages.txt', 'r', encoding='utf8', errors='ignore') as txt_file:
-    messages =  random.choice(txt_file.readlines())
-
-
-with open('groups.txt', 'r', encoding='utf8', errors='ignore') as txt2_file:
-    list_publics = txt2_file.readlines()
+try:
+    with open('messages.txt', 'r', encoding='utf8', errors='ignore') as txt_file:
+        messages =  random.choice(txt_file.readlines())
+except Exception:
+    print('сообщения')
+try:
+    with open('groups.txt', 'r', encoding='utf8', errors='ignore') as txt2_file:
+        list_publics = txt2_file.readlines()
+except Exception:
+    print('группы')
 
 with open('config.txt', 'r', encoding='utf8', errors='ignore') as txt_file:
     auth = txt_file.readlines()
-try:
 
-    post_wall_vk(login=auth[0].strip(), password=auth[1].strip(), list_publics=list_publics, messages=messages)
+
+
+try:
+    post_wall_vk(login=auth[0].strip(),
+                 password=auth[1].strip(),
+                 list_publics=list_publics,
+                 messages=messages)
+
 except Exception as err:
     print('Ошибка', err)
     input()
